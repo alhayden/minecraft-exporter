@@ -7,7 +7,7 @@ import functools
 from signal import pause
 
 # replace this with the path to the world which you intend to export metrics from
-STATS_DIR='/home/dylan/.minecraft/saves/smp/stats'
+STATS_DIR='/PATH/TO/WORLD/FOLDER/stats'
 
 
 @functools.lru_cache()
@@ -62,7 +62,6 @@ class MinecraftMetricCollector(object):
                     value = int(players[player][k1][k2])
                     stat.add_metric([player], value)
 
-        print(metrics)
         for metric in metrics:
             yield metrics[metric]
 
