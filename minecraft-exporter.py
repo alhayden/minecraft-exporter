@@ -1,20 +1,39 @@
 from prometheus_client.core import GaugeMetricFamily, REGISTRY
 from prometheus_client import start_http_server
-import json, os
+import requests
+import json
+import os
+import functools
 from signal import pause
 
 # replace this with the path to the world which you intend to export metrics from
 STATS_DIR='PATH-TO-WORLD-SAVE/stats'
 
+
+@functools.lru_cache()
+def uuid_to_username(uuid):
+    if uuid in username_cache:
+        return username_cache[uuid]
+    resp = requests.get('https://sessionserver.mojang.com/session/minecraft/profile/' + uuid.replace('-', ''))
+    name = json.loads(resp.content)['name']
+    username_cache[uuid] = name
+    return name
+
+
 class MinecraftMetricCollector(object):
     def collect(self):
         # finds the stats file for each player
         files = os.listdir(STATS_DIR)
-        # create global stats storage
-        stats = {}
+        # create stats storage for each player
+        players = {}
         # loop through players
         for f in files:
             player = json.loads(open(STATS_DIR + '/' + f,'r').read())['stats']
+            stats = {}
+            # find their username
+            uuid = os.splitext(f)[0]
+            name = uuid_to_username(uuid)
+            players[name] = stats
             for k1 in player.keys():
                 if not k1 in stats.keys():
                     # if a stat is not already in the global list, add it
@@ -32,12 +51,14 @@ class MinecraftMetricCollector(object):
 
 
         # generate exports
-        for k1 in stats.keys():
-            for k2 in stats[k1].keys():
-                name = 'minecraft_' + k1 + '_' + k2
-                name = name.replace('minecraft:','')
-                value = int(stats[k1][k2])
-                yield GaugeMetricFamily(name, 'a minecraft statistic', value)
+        for player in players:
+            stats = players[player]
+            for k1 in stats.keys():
+                for k2 in stats[k1].keys():
+                    name = 'minecraft_{}_{}\{player={}\}'.format(k1, k2, player)
+                    name = name.replace('minecraft:','')
+                    value = int(stats[k1][k2])
+                    yield GaugeMetricFamily(name, 'a minecraft statistic', value)
 
 REGISTRY.register(MinecraftMetricCollector())
 
