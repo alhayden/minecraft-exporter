@@ -1,4 +1,4 @@
-from prometheus_client.core import GaugeMetricFamily, REGISTRY
+from prometheus_client.core import CounterMetricFamily, REGISTRY, Counter
 from prometheus_client import start_http_server
 import requests
 import json
@@ -7,16 +7,13 @@ import functools
 from signal import pause
 
 # replace this with the path to the world which you intend to export metrics from
-STATS_DIR='PATH-TO-WORLD-SAVE/stats'
+STATS_DIR='REPLACE-ME-TO-SAVE/stats'
 
 
 @functools.lru_cache()
 def uuid_to_username(uuid):
-    if uuid in username_cache:
-        return username_cache[uuid]
     resp = requests.get('https://sessionserver.mojang.com/session/minecraft/profile/' + uuid.replace('-', ''))
     name = json.loads(resp.content)['name']
-    username_cache[uuid] = name
     return name
 
 
@@ -31,7 +28,7 @@ class MinecraftMetricCollector(object):
             player = json.loads(open(STATS_DIR + '/' + f,'r').read())['stats']
             stats = {}
             # find their username
-            uuid = os.splitext(f)[0]
+            uuid = os.path.splitext(f)[0]
             name = uuid_to_username(uuid)
             players[name] = stats
             for k1 in player.keys():
@@ -55,10 +52,12 @@ class MinecraftMetricCollector(object):
             stats = players[player]
             for k1 in stats.keys():
                 for k2 in stats[k1].keys():
-                    name = 'minecraft_{}_{}\{player={}\}'.format(k1, k2, player)
+                    name = 'minecraft_{}_{}'.format(k1, k2)
                     name = name.replace('minecraft:','')
                     value = int(stats[k1][k2])
-                    yield GaugeMetricFamily(name, 'a minecraft statistic', value)
+                    stat = CounterMetricFamily(name, 'a minecraft statistic', labels=["player"])
+                    stat.add_metric([player], value)
+                    yield stat
 
 REGISTRY.register(MinecraftMetricCollector())
 
