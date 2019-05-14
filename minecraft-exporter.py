@@ -7,7 +7,7 @@ import functools
 from signal import pause
 
 # replace this with the path to the world which you intend to export metrics from
-STATS_DIR='REPLACE-ME-TO-SAVE/stats'
+STATS_DIR='/home/dylan/.minecraft/saves/smp/stats'
 
 
 @functools.lru_cache()
@@ -48,16 +48,23 @@ class MinecraftMetricCollector(object):
 
 
         # generate exports
+        metrics = {}
         for player in players:
-            stats = players[player]
-            for k1 in stats.keys():
-                for k2 in stats[k1].keys():
+            for k1 in players[player].keys():
+                for k2 in players[player][k1].keys():
                     name = 'minecraft_{}_{}'.format(k1, k2)
                     name = name.replace('minecraft:','')
-                    value = int(stats[k1][k2])
-                    stat = CounterMetricFamily(name, 'a minecraft statistic', labels=["player"])
+                    if name not in metrics:
+                        stat = CounterMetricFamily(name, 'a minecraft statistic', labels=["player"])
+                        metrics[name] = stat
+                    else:
+                        stat = metrics[name]
+                    value = int(players[player][k1][k2])
                     stat.add_metric([player], value)
-                    yield stat
+
+        print(metrics)
+        for metric in metrics:
+            yield metrics[metric]
 
 REGISTRY.register(MinecraftMetricCollector())
 
