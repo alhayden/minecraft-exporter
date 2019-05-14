@@ -1,4 +1,4 @@
-from prometheus_client.core import CounterMetricFamily, REGISTRY, Counter
+from prometheus_client.core import GaugeMetricFamily, REGISTRY, Counter
 from prometheus_client import start_http_server
 import requests
 import json
@@ -55,7 +55,7 @@ class MinecraftMetricCollector(object):
                     name = 'minecraft_{}_{}'.format(k1, k2)
                     name = name.replace('minecraft:','')
                     if name not in metrics:
-                        stat = CounterMetricFamily(name, 'a minecraft statistic', labels=["player"])
+                        stat = GaugeMetricFamily(name, 'a minecraft statistic', labels=["player"])
                         metrics[name] = stat
                     else:
                         stat = metrics[name]
