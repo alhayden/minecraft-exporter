@@ -1,0 +1,45 @@
+{
+	"stats_dir":"/PATH/TO/WORLD/FOLDER/stats",
+	"custom_groups":{
+		"broken_picks":{
+			"minecraft:broken":[
+				"*_pickaxe"
+			]
+		},
+		"eaten_food":{
+			"minecraft:used":[
+				"*_stew",
+				"*_potato",
+				"*_porkchop",
+				"*_beef",
+				"*_chicken",
+				"*_mutton",
+				"*_rabbit",
+				"beetroot",
+				"beetroot_soup",
+				"apple",
+				"beetroot*",
+				"bread",
+				"cake",
+				"carrot",
+				"chorus_fruit",
+				"cookie",
+				"dried_kelp",
+				"golden_apple",
+				"enchanted_golden_apple",
+				"golden_carrot",
+				"melon_slice",
+				"pufferfish",
+				"pumpkin_pie",
+				"rotten_flesh",
+				"spider_eye",
+				"steak",
+				"sweet_berries",
+				"tropical_fish",
+				"*_cod",
+				"*_salmon"
+			]
+		}
+
+	}
+}
