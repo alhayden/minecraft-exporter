@@ -4,6 +4,7 @@ import requests
 import json
 import os
 import functools
+import re
 from signal import pause
 
 # load config file
@@ -18,33 +19,14 @@ def uuid_to_username(uuid):
     name = json.loads(resp.content)['name']
     return name
 
-def starmatch(string, test):
-    string = string.replace('minecraft:','')
-    if string == test.replace('*',''):
-        return True
-    parts_raw = test.split('*')
-    parts = []
-    for p in parts_raw:
-        if p != '':
-            parts.append(p)
-
-    for t in parts:
-        string = string.replace(t, '|')
-        test = test.replace(t, '|')
-    if '|' not in string:
-        return False
-    test = test.split('|')
-    string = string.split('|')
-    for i in range(len(test)):
-        if test[i] == '' and string[i] != '':
-            return False
-    return True
-
-def match_in(string, test_list):
-    for test in test_list:
-        if starmatch(string, test):
-            return True
-    return False
+def handle_groups(k1, k2, stats):
+    for gname in GROUPS.keys():
+        if k1 in GROUPS[gname].keys():
+            for regex in GROUPS[gname][k1]:
+                if re.fullmatch(regex, k2.replace('minecraft:','')) is not None:
+                    if gname not in stats['group'].keys():
+                        stats['group'][gname] = 0
+                    stats['group'][gname] += stats[k1][k2]
 
 class MinecraftMetricCollector(object):
     def collect(self):
@@ -54,39 +36,30 @@ class MinecraftMetricCollector(object):
         players = {}
         # loop through players
         for f in files:
-            player = json.loads(open(STATS_DIR + '/' + f,'r').read())['stats']
+            player_stats = json.loads(open(STATS_DIR + '/' + f,'r').read())['stats']
             stats = {}
             # find their username
             uuid = os.path.splitext(f)[0]
             name = uuid_to_username(uuid)
             players[name] = stats
 
-            for k1 in player.keys():
+            stats['group'] = {}
+
+            for k1 in player_stats.keys():
                 if not k1 in stats.keys():
                     # if a stat is not already in the global list, add it
                     stats[k1] = {}
                     # add an 'all' subcategory if one does not exist already
                     if not 'all' in stats[k1]:
                         stats[k1]['all'] = 0
-                for k2 in player[k1]:
+                for k2 in player_stats[k1]:
                     # add stat to global list if not already there
                     if k2 not in stats[k1].keys():
                         stats[k1][k2] = 0
                     # sum stat with global list
-                    stats[k1][k2] += player[k1][k2]
-                    stats[k1]['all'] += player[k1][k2]
-
-            # create custom groups
-            stats['groups'] = {}
-            for gname in GROUPS.keys():
-                stats['groups'][gname] = 0
-                for k in GROUPS[gname].keys():
-                    if k in stats.keys():
-                        for s in stats[k].keys():
-                            if match_in(s, GROUPS[gname][k]):
-                                stats['groups'][gname] += stats[k][s]
-
-
+                    stats[k1][k2] += player_stats[k1][k2]
+                    stats[k1]['all'] += player_stats[k1][k2]
+                    handle_groups(k1, k2, stats)
 
         # generate exports
         metrics = {}

@@ -3,22 +3,22 @@
 	"custom_groups":{
 		"broken_picks":{
 			"minecraft:broken":[
-				"*_pickaxe"
+				".*_pickaxe"
 			]
 		},
 		"eaten_food":{
 			"minecraft:used":[
-				"*_stew",
-				"*_potato",
-				"*_porkchop",
-				"*_beef",
-				"*_chicken",
-				"*_mutton",
-				"*_rabbit",
+				".*_stew",
+				".*_potato",
+				".*_porkchop",
+				".*_beef",
+				".*_chicken",
+				".*_mutton",
+				".*_rabbit",
 				"beetroot",
 				"beetroot_soup",
 				"apple",
-				"beetroot*",
+				"beetroot.*",
 				"bread",
 				"cake",
 				"carrot",
@@ -36,8 +36,8 @@
 				"steak",
 				"sweet_berries",
 				"tropical_fish",
-				"*_cod",
-				"*_salmon"
+				".*_cod",
+				".*_salmon"
 			]
 		}
 
