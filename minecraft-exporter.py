@@ -31,34 +31,34 @@ def handle_groups(k1, k2, stats):
                     stats['group'][gname] += stats[k1][k2]
 
 def handle_stats(players):
-        # finds the stats file for each player
-        files = os.listdir(STATS_DIR)
-        # loop through players
-        for f in files:
-            player_stats = json.loads(open(STATS_DIR + '/' + f,'r').read())['stats']
-            stats = {}
-            # find their username
-            uuid = os.path.splitext(f)[0]
-            name = uuid_to_username(uuid)
-            players[name] = stats
+    # finds the stats file for each player
+    files = os.listdir(STATS_DIR)
+    # loop through players
+    for f in files:
+        player_stats = json.loads(open(STATS_DIR + '/' + f,'r').read())['stats']
+        stats = {}
+        # find their username
+        uuid = os.path.splitext(f)[0]
+        name = uuid_to_username(uuid)
+        players[name] = stats
 
-            stats['group'] = {}
+        stats['group'] = {}
 
-            for k1 in player_stats.keys():
-                if not k1 in stats.keys():
-                    # if a stat is not already in the global list, add it
-                    stats[k1] = {}
-                    # add an 'all' subcategory if one does not exist already
-                    if not 'all' in stats[k1]:
-                        stats[k1]['all'] = 0
-                for k2 in player_stats[k1]:
-                    # add stat to global list if not already there
-                    if k2 not in stats[k1].keys():
-                        stats[k1][k2] = 0
-                    # sum stat with global list
-                    stats[k1][k2] += player_stats[k1][k2]
-                    stats[k1]['all'] += player_stats[k1][k2]
-                    handle_groups(k1, k2, stats)
+        for k1 in player_stats.keys():
+            if not k1 in stats.keys():
+                # if a stat is not already in the global list, add it
+                stats[k1] = {}
+                # add an 'all' subcategory if one does not exist already
+                if not 'all' in stats[k1]:
+                    stats[k1]['all'] = 0
+            for k2 in player_stats[k1]:
+                # add stat to global list if not already there
+                if k2 not in stats[k1].keys():
+                    stats[k1][k2] = 0
+                # sum stat with global list
+                stats[k1][k2] += player_stats[k1][k2]
+                stats[k1]['all'] += player_stats[k1][k2]
+                handle_groups(k1, k2, stats)
 
 def handle_nbt(players):
     pass
