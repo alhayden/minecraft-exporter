@@ -35,7 +35,7 @@ def handle_stats(players):
     files = os.listdir(STATS_DIR)
     # loop through players
     for f in files:
-        player_stats = json.loads(open(os.path.join(STATS_DIR, '/', f), 'r').read())['stats']
+        player_stats = json.loads(open(os.path.join(STATS_DIR, f), 'r').read())['stats']
         stats = {}
         # find their username
         uuid = os.path.splitext(f)[0]
@@ -63,7 +63,7 @@ def handle_stats(players):
 def handle_nbt(players):
     files = os.listdir(PLAYER_DIR)
     for f in files:
-        player_nbt = NBTparser.read_nbt(os.path.join(PLAYER_DIR, '/', f))
+        player_nbt = NBTparser.read_nbt(os.path.join(PLAYER_DIR, f))
         uuid = os.path.splitext(f)[0]
         name = uuid_to_username(uuid)
         nbt = {}
