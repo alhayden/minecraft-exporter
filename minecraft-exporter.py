@@ -17,7 +17,7 @@ GROUPS = CONFIG['custom_groups']
 
 @functools.lru_cache()
 def uuid_to_username(uuid):
-    return uuid#resp = requests.get('https://sessionserver.mojang.com/session/minecraft/profile/' + uuid.replace('-', ''))
+    resp = requests.get('https://sessionserver.mojang.com/session/minecraft/profile/' + uuid.replace('-', ''))
     name = json.loads(resp.content)['name']
     return name
 
