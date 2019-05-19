@@ -80,3 +80,11 @@ def decode_nbt(nbt, tag_type, data, named=True):
 
     return True
 
+
+def main():
+    import sys, pprint
+    fname = sys.argv[1]
+    pprint.pprint(read_nbt(fname))
+
+if __name__ == '__main__':
+    main()

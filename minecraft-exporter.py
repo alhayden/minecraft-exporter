@@ -35,7 +35,7 @@ def handle_stats(players):
     files = os.listdir(STATS_DIR)
     # loop through players
     for f in files:
-        player_stats = json.loads(open(STATS_DIR + '/' + f,'r').read())['stats']
+        player_stats = json.loads(open(os.path.join(STATS_DIR, '/', f), 'r').read())['stats']
         stats = {}
         # find their username
         uuid = os.path.splitext(f)[0]
@@ -61,7 +61,19 @@ def handle_stats(players):
                 handle_groups(k1, k2, stats)
 
 def handle_nbt(players):
-    pass
+    files = os.listdir(PLAYER_DIR)
+    for f in files:
+        player_nbt = NBTparser.read_nbt(os.path.join(PLAYER_DIR, '/', f))
+        uuid = os.path.splitext(f)[0]
+        name = uuid_to_username(uuid)
+        nbt = {}
+        players[name]['nbt'] = nbt
+        for tag in CONFIG['nbt_exports']:
+            if tag in player_nbt:
+                if type(player_nbt[tag]) in [list, dict]:
+                    nbt[tag] = len(player_nbt[tag])
+                else:
+                    nbt[tag] = player_nbt[tag]
 
 class MinecraftMetricCollector(object):
     def collect(self):
@@ -70,7 +82,8 @@ class MinecraftMetricCollector(object):
     
         handle_stats(players)
 
-        handle_nbt(players)
+        if CONFIG['nbt']:
+            handle_nbt(players)
 
         # generate exports
         metrics = {}

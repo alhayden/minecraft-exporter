@@ -46,6 +46,16 @@
 	"nbt_exports":[
 		"Health",
 		"XpLevel",
-		"Inventory"
+        "XpTotal",
+        "Score",
+        "SleepTimer",
+        "foodLevel",
+        "foodSaturationLevel",
+        "foodTickTimer",
+        "ActiveEffects",
+        "FallFlying",
+        "Dimension",
+		"Inventory",
+        "EnderItems"
 	]
 }
