@@ -79,7 +79,9 @@ def handle_nbt(players):
                 try:
                     spec = tag['id']
                     parts = spec.replace('[', '{').split('{')
-                    types = re.findall(r'(\[\{)', spec)
+                    if parts[0] == '':
+                        parts = parts[1:]
+                    types = re.findall(r'(\[|\{)', spec)
                     current_tag = player_nbt
                     for i,part in enumerate(parts):
                         if types[i] == '{':

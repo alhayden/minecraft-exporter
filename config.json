@@ -46,19 +46,19 @@
 	"nbt_exports":[
 		"Health",
 		"XpLevel",
-        "XpTotal",
-        "Score",
-        "SleepTimer",
-        "foodLevel",
-        "foodSaturationLevel",
-        "foodTickTimer",
-        "ActiveEffects",
-        "FallFlying",
-        "Dimension",
+		"XpTotal",
+		"Score",
+		"SleepTimer",
+		"foodLevel",
+		"foodSaturationLevel",
+		"foodTickTimer",
+		"ActiveEffects",
+		"FallFlying",
+		"Dimension",
 		"Inventory",
-        {"name": "pos_x", "id": "{Pos[0"},
-        {"name": "pos_y", "id": "{Pos[1"},
-        {"name": "pos_z", "id": "{Pos[2"},
-        "EnderItems"
+		{"name": "pos_x", "id": "{Pos[0"},
+		{"name": "pos_y", "id": "{Pos[1"},
+		{"name": "pos_z", "id": "{Pos[2"},
+		"EnderItems"
 	]
 }
