@@ -69,11 +69,27 @@ def handle_nbt(players):
         nbt = {}
         players[name]['nbt'] = nbt
         for tag in CONFIG['nbt_exports']:
-            if tag in player_nbt:
-                if type(player_nbt[tag]) in [list, dict]:
-                    nbt[tag] = len(player_nbt[tag])
-                else:
-                    nbt[tag] = player_nbt[tag]
+            if type(tag) == str:
+                if tag in player_nbt:
+                    if type(player_nbt[tag]) in [list, dict]:
+                        nbt[tag] = len(player_nbt[tag])
+                    else:
+                        nbt[tag] = player_nbt[tag]
+            elif type(tag) == dict:
+                try:
+                    spec = tag['id']
+                    parts = spec.replace('[', '{').split('{')
+                    types = re.findall(r'(\[\{)', spec)
+                    current_tag = player_nbt
+                    for i,part in enumerate(parts):
+                        if types[i] == '{':
+                            current_tag = current_tag[part]
+                        else:
+                            current_tag = current_tag[int(part)]
+                    nbt[tag['name']] = current_tag
+                except (KeyError, ValueError):
+                    pass
+                        
 
 class MinecraftMetricCollector(object):
     def collect(self):
