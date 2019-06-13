@@ -13,7 +13,8 @@ CONFIG = json.loads(open('config.json', 'r').read())
 STATS_DIR = CONFIG['world_dir'] + "/stats"
 PLAYER_DIR = CONFIG['world_dir'] + "/playerdata"
 GROUPS = CONFIG['custom_groups']
-
+SERVER_PORT = int(CONFIG['export_port'])
+print(SERVER_PORT)
 
 @functools.lru_cache()
 def uuid_to_username(uuid):
@@ -123,7 +124,7 @@ class MinecraftMetricCollector(object):
 
 REGISTRY.register(MinecraftMetricCollector())
 
-start_http_server(8000)
+start_http_server(SERVER_PORT)
 
 # suspend the program indefinitely so the exporter can run in the background
 pause()

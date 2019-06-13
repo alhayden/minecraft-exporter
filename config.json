@@ -1,5 +1,6 @@
 {
 	"world_dir":"/PATH/TO/WORLD/FOLDER",
+	"export_port":8000,
 	"custom_groups":{
 		"broken_picks":{
 			"minecraft:broken":[
